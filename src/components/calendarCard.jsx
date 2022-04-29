@@ -6,15 +6,18 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { CardActions } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
-
+import { IconButton } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material"
 import FullDescPopover from "./FullDescPopover";
 import CalendarAddPopover from "./CalendarAddPopover";
 import { toLocalString } from "../utils/formatting";
 import { checkTier } from "../utils/tier";
 import { ReleaseDate } from "../utils/releasedate";
 
-const Game = (props) => {
+const Game = ({ data, close }) => {
+  
   const {
     module,
     name,
@@ -28,32 +31,38 @@ const Game = (props) => {
     level_max,
     datetime_release,
     datetime_open_release,
-  } = props;
+  } = data;
 
   return (
     <Card raised="true" sx={{ maxWidth: 450 }}>
       <CardContent sx={{ pt: 0.75, pb: 0.2, "&:last-child": { pb: 0 } }}>
-        <Grid
+        <Stack
           container
           direction="row"
           justifyContent="space-between"
-          alignItems="center"
         >
-          <Box>
-            <Typography variant="cardmain" color="text.primary" marginRight={3}>
+        <Typography variant="cardmain" color="text.primary" marginRight={3}>
               {toLocalString(datetime)}
-            </Typography>
-            <Typography variant="subtitle2" color="text.secondary">
-              {length}
-            </Typography>
-          </Box>
+        </Typography>
+          <IconButton onClick={close}>
+          <CloseIcon />
+        </IconButton>
+        </Stack>
+        <Stack
+          container
+          direction="row"
+          justifyContent="space-between"
+        >
           <Typography variant="subtitle" color="text.primary" sx={{ mr: 1 }}>
             {module}
           </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+              {length}
+        </Typography>
           <Typography variant="subtitle2" color="text.primary" display="block">
             {checkTier(level_min, level_max)}
           </Typography>
-        </Grid>
+        </Stack>
         <Divider
           variant="middle"
           sx={{
@@ -70,7 +79,7 @@ const Game = (props) => {
           alignItems="center"
           sx={{ mt: 0.2 }}
         >
-          <FullDescPopover game={props} /> <CalendarAddPopover game={props} />
+          <FullDescPopover game={data} /> <CalendarAddPopover game={data} />
         </Grid>
         <Divider variant="middle" sx={{ mb: 1 }} />
         <Typography variant="subtitle2" color="text.primary" display="block">
