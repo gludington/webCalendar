@@ -1,8 +1,10 @@
 import "../styles/Global.css";
+import 'react-big-calendar/lib/css/react-big-calendar.css'
 import React, { useState, useEffect } from "react";
+import moment from 'moment'
+import Popup from "reactjs-popup";
 
-import { Fab, Grid, IconButton, Typography } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material"
+import { Fab, Grid, Typography } from "@mui/material";
 import { getGames } from "../api/games";
 import Game from "../components/calendarCard";
 import { checkDaysToGo } from "../utils/daysToGo";
@@ -10,20 +12,17 @@ import TridenAvatar from "../img/TridenAvatar2048.png";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 
 import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
- import 'react-big-calendar/lib/css/react-big-calendar.css'
-import Popup from "reactjs-popup";
 const mLocalizer = momentLocalizer(moment)
 
 const Modal = ({event, close}) => {
   return event === undefined ? null : (
     <Popup open={true} closeOnDocumentClick onClose={close}>
-    <div className="modal">
+      <div className="modal">
         <div className="content">
           <Game data={event} close={close} />
         </div>
       </div>
-      </Popup>
+    </Popup>
   )
 }
 
