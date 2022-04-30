@@ -27,22 +27,23 @@ const Modal = ({event, close}) => {
   )
 }
 
+const duration = (length) => {
+  const numDiv = length.split(' ');
+  //todo, either get some more advanced parsing or work
+  //on getting a numeric duration from backend
+  return parseInt(numDiv[0]) * 60 * 60 * 1000;
+}
+
 export default function EventsCalendar() {
   const [data, setData] = useState([]);
   const [ modalEvent, setModalEvent ] = useState();
   useEffect(() => {
-    getGames().then((result) => {
-      setData(
-        result.data.sort((a, b) => {
-          return new Date(a.datetime) - new Date(b.datetime);
-        })
-      );
-    });
+    getGames().then((result) => setData(result.data))
   }, []);
   
   const calendarData = data.map(event => {
     const start = new Date(event.datetime);
-    const end = new Date(start.getTime() + (4 * 60 * 60 * 1000));
+    const end = new Date(start.getTime() + duration(event.length));
     return { ...event, title: event.name, start: start, end: end}
   });
   
