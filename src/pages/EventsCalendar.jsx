@@ -1,5 +1,6 @@
 import "../styles/Global.css";
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import "../styles/calendar.scss"
 import React, { useState, useEffect } from "react";
 import moment from 'moment'
 import Popup from "reactjs-popup";
