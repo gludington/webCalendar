@@ -91,7 +91,7 @@ export default function EventsCalendar() {
           <Typography variant="subtitle1" color="text.primary">
             Signups to games on{" "}
             <a
-              href="https://discord.gg/tridengames"
+              href="https://discord.gg/JDB6BYTK9T"
               target="_blank"
               rel="noreferrer"
             >
@@ -106,7 +106,7 @@ export default function EventsCalendar() {
             color="primary"
             aria-label="add"
             sx={{ position: "fixed", bottom: "1%", right: "10%" }}
-            href="https://triden.digitaldemiplane.com/invisibleservant/admin/core/game/add/"
+            href="https://unseen-servant.digitaldemiplane.com/unseenservant/admin/core/game/add/"
             target="_blank"
             rel="noreferrer"
           >
