@@ -106,7 +106,7 @@ export default function EventsCalendar() {
             color="primary"
             aria-label="add"
             sx={{ position: "fixed", bottom: "1%", right: "10%" }}
-            href="https://unseen-servant.digitaldemiplane.com/unseenservant/admin/core/game/add/"
+            href="https://unseen-servant.digitaldemiplane.com/admin/core/game/add/"
             target="_blank"
             rel="noreferrer"
           >
