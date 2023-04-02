@@ -2,7 +2,7 @@ import React from "react";
 import DataTable from "../components/DataTable";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { useGames } from "../api/games";
+import { useGames } from "../api/unseenservant";
 import Button from "@mui/material/Button";
 import { toLocalString } from "../utils/formatting";
 

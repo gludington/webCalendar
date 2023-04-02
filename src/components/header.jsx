@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavLink } from "react-router-dom";
 
 import { AppBar, Box, Toolbar, Grid, Button } from "@mui/material";
-
+import { useUserDetails } from "../api/unseenservant";
 import "../styles/Global.css";
 import AuthButton from "./authentication/AuthButton";
 
@@ -12,6 +12,8 @@ import AuthButton from "./authentication/AuthButton";
 />;
 
 const Header = () => {
+  const { data, isLoading } = useUserDetails();
+  console.warn("header", data, isLoading);
   return (
     <Box sx={{ justifyContent: "space-between", color: "red" }}>
       <AppBar position="fixed">

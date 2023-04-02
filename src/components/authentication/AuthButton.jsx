@@ -2,17 +2,15 @@ import React, { useState } from "react";
 
 import { Avatar, Menu, MenuItem } from "@mui/material";
 
-import userDataStore from "../../datastore/userdata";
 import stringAvatar from "../../utils/stringAvatar";
 import { doLogout } from "../../api/auth";
-
+import { useQueryClient } from "react-query";
+import { useUserContext } from "../../App"
 export default function AuthButton() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [username, setUsername] = userDataStore((s) => [
-    s.username,
-    s.setUsername,
-  ]);
-
+  const { data: user, isLoading } = useUserContext();
+  console.info(user);
+  const queryClient = useQueryClient();
   const openMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,13 +28,13 @@ export default function AuthButton() {
   const discordLogout = () => {
     doLogout().then(() => {
       closeMenu();
-      setUsername("");
+      queryClient.invalidateQueries(["userdetails"]);
     });
   };
 
   return (
     <React.Fragment>
-      <Avatar onClick={openMenu} {...stringAvatar(username ? username : "")} />
+      <Avatar onClick={openMenu}{...stringAvatar(isLoading ? "..." : user?.user_data?.username || "")} />
       <Menu
         id="auth-menu"
         anchorEl={anchorEl}
@@ -51,8 +49,7 @@ export default function AuthButton() {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={discordAuth}>Login via discord</MenuItem>
-        {username && <MenuItem onClick={discordLogout}>Logout</MenuItem>}
+        {user?.user_data ?  <MenuItem onClick={discordLogout}>Logout</MenuItem>: <MenuItem onClick={discordAuth}>Login via discord</MenuItem>}
       </Menu>
     </React.Fragment>
   );

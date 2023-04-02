@@ -2,7 +2,7 @@ import "../styles/Global.css";
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Skeleton } from "@mui/material";
 import { Fab, Grid, Typography } from "@mui/material";
-import { useGames } from "../api/games";
+import { useGames } from "../api/unseenservant";
 import Game from "../components/calendarCard";
 import { checkDaysToGo } from "../utils/daysToGo";
 import TridenAvatar from "../img/TridenAvatar2048.png";

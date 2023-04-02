@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { createContext, useContext } from "react";
 import { ThemeProvider } from "@emotion/react";
 import { Grid } from "@mui/material";
 
@@ -19,9 +19,36 @@ import MemberLandingPage from "./pages/MemberLandingPage";
 import GameCreationPage from "./pages/GameCreationPage";
 import ErrorPage from "./pages/ErrorPage";
 import AuthErrorPage from "./pages/AuthErrorPage";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { useUserDetails } from "./api/unseenservant";
+
+const queryClient = new QueryClient({ defaultOptions: {queries: { refetchOnWindowFocus: false, retry: false } } });
+
+function AppContainer() {
+  return <QueryClientProvider client={queryClient}><App/></QueryClientProvider>
+}
+
+const UserContext = createContext();
+
+const UserProvider = ({ children }) => {
+  const { data, isLoading, error } = useUserDetails();
+  console.warn("app", data, isLoading);
+
+  return (
+    <UserContext.Provider value={{ data, isLoading, error}}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export function useUserContext() {
+  const context = useContext(UserContext);
+  return context;
+}
 
 function App() {
   return (
+    <UserProvider >
     <ThemeProvider theme={TridenTheme}>
       <Router>
         <Grid container direction="column" className="Background">
@@ -58,9 +85,10 @@ function App() {
             <Grid item xs={false} sm={2} />
           </Grid>
         </Grid>
-      </Router>
-    </ThemeProvider>
+        </Router>
+      </ThemeProvider>
+      </UserProvider>
   );
 }
 
-export default App;
+export default AppContainer;
