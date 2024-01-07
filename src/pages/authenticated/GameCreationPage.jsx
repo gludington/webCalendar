@@ -1,15 +1,49 @@
 import { useState } from "react";
-
+import { useFormik, Field, Formik } from "formik";
+ import * as Yup from "yup";
 import { Box, TextField, Button } from "@mui/material";
 
 import RealmSelector from "../../components/game/RealmSelector";
 import VariantSelector from "../../components/game/VariantSelector";
 
 export default function GameCreationPage() {
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
-  const [realm, setRealm] = useState("faerun");
-  const [variant, setVariant] = useState("resAL");
+  const formik = useFormik({
+    validateOnChange: false,
+    validateOnBlur: false,
+    validationSchema: Yup.object().shape({   
+      name: Yup.string()
+        .min(2, 'Too Short!')
+        .max(70, 'Too Long!')
+        .required('Required'),
+      code: Yup.string()
+        .min(2, 'Too Short!')
+        .max(70, 'Too Long!')
+        .required('Required')
+      
+    }),
+    initialValues: {
+      name: "",
+      code: "",
+      realm: "faerun",
+      variant: "resAL",
+      description: "",
+      maxPlayers: 6,
+      tier: 1,
+      minLevel: 1,
+      maxLevel: 4,
+      warnings: "",
+      streaming: false,
+      dateTime: null,
+      dateTimePatreonRelease: null,
+      length: "4 hours",
+      ready: true
+
+    },
+    onSubmit: (values) => {
+      console.info("This is only called if validation passes");
+      //save(values)
+    }
+  });
   const [description, setDescription] = useState("");
   const [maxPlayers, setMaxPlayers] = useState(6);
   const [tier, setTier] = useState(1);
@@ -23,12 +57,9 @@ export default function GameCreationPage() {
   const [length, setLength] = useState("4 Hours");
   const [ready, setReady] = useState(true);
 
-  const validateData = () => {
-    if (name && code) return true;
-    return false;
-  };
-
   return (
+    <Formik {...formik} >
+      <form onSubmit={formik.handleSubmit}>
     <Box
       sx={{
         display: "flex",
@@ -37,13 +68,15 @@ export default function GameCreationPage() {
         gap: 1,
       }}
     >
-      <TextField value={name} onChange={(e) => setName(e.target.value)} label="Game Name" />
-      <TextField value={code} onChange={(e) => setCode(e.target.value)} label="Module Code" />
-      <RealmSelector value={realm} setValue={setRealm} />
-      <VariantSelector value={variant} setValue={setVariant} />
-      <Button variant="outlined" disabled={!validateData}>
+      <TextField id="name" value={formik.values.name} onChange={formik.handleChange} label="Game Name" error={formik.errors.name} helperText={formik.errors.name} />
+      <TextField id="code" value={formik.values.code} onChange={formik.handleChange} label="Module Code" error={formik.errors.code} helperText={formik.errors.code} />
+      <RealmSelector />
+      <VariantSelector />
+      <Button type="submit" variant="outlined">
         Create Game
       </Button>
-    </Box>
+        </Box>
+        </form>
+      </Formik>
   );
 }

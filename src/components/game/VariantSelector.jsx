@@ -1,19 +1,15 @@
 import { React } from "react";
-
+import { useFormikContext } from "formik";
 import { FormControl, InputLabel } from "@mui/material";
 import { Select, MenuItem, Divider } from "@mui/material";
 
 export default function VariantSelector(props) {
-  const { value, setValue } = props;
-
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
+  const { values, handleChange } = useFormikContext(); 
 
   return (
     <FormControl fullWidth>
       <InputLabel>Game Variant</InputLabel>
-      <Select id="realm-select" value={value} label="Game Variant" onChange={handleChange}>
+      <Select id="variant" name="variant" value={values.variant} label="Game Variant" onChange={handleChange}>
         <MenuItem value={"resAL"}>Resident AL</MenuItem>
         <MenuItem value={"guestAL"}>Guest AL</MenuItem>
         <Divider fullWidth />
