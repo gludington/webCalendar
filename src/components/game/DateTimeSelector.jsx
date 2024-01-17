@@ -16,6 +16,7 @@ export default function DateTimeSelector(props) {
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <DateTimePicker label={props.label} value={mValue} onChange={(val) => {
                 setFieldValue(props.name, val.toDate())
+                props?.onChange(val.toDate());
             }}
                 shouldDisableDate={(val) => {
                     return !!error ? val.toDate().getTime() === mValue.toDate().getTime(): false

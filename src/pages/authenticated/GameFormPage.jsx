@@ -79,7 +79,7 @@ function GamePage(props) {
   );
 }
 function GameForm(props) {
-  const { values, errors, handleSubmit, handleChange, setFieldValue } = useFormikContext();
+  const { values, errors, handleSubmit, handleChange, setFieldValue, setValues } = useFormikContext();
   const [showDelete, setShowDelete] = useState(false);
   
   return (
@@ -181,7 +181,10 @@ function GameForm(props) {
           columnSpacing={2}
         >
           <Grid item xs={6} md={6}>
-            <DateTimeSelector label="Game Start" name="datetime" />
+            <DateTimeSelector label="Game Start" name="datetime" onChange={(val) => {
+              const oneWeek = 1000 * 60 * 60 * 24 * 7; //id put this in a constant, above, but thats trivial perf gain
+              setValues({...values, datetime: val, datetime_release: new Date(val.getTime()  - (2*oneWeek)), datetime_open_release: new Date(val.getTime() - oneWeek)})
+            }} />
           </Grid>
           <Grid item xs={6} md={6}>
             <FormControlLabel control={<Checkbox checked={values.streaming} />} label="Streaming" onChange={(evt) => setFieldValue("streaming", evt.target.checked)} />
