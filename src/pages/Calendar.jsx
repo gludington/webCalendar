@@ -11,6 +11,8 @@ import NameFilter from "../components/nameFilter";
 import useLocalStorage, { deleteFromStorage } from "@rehooks/local-storage";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
+import ConfirmDialog from "../components/game/ConfirmDialog";
+import MultiSnackbar from "../components/game/SnackbarAlert";
 
 // the prefix serves as a namespace so we will not delete other keys, unless they pick this name
 // leave this the same unless you have a reason to change this
@@ -39,7 +41,7 @@ function nameFilterFn(gameData, activeName) {
               .includes(activeName.toLocaleLowerCase())) ||
             (player.discord_id &&
               player.discord_id.toString().toLocaleLowerCase() ===
-                activeName.toLocaleLowerCase()))
+              activeName.toLocaleLowerCase()))
       )) ||
     (gameData.dm_name &&
       gameData.dm_name
@@ -77,25 +79,25 @@ export default function Calendar() {
   const [localSlots, setLocalSlots] = useLocalStorage(slotsKey, "");
   const [slots, setSlots] = useState(createSlots(localSlots));
   const { user, isLoading: userLoading } = useContext(UserContext);
-  const { data, isLoading, joinGame, isJoining } = useGames();
-  
+  const { data, isLoading, joinGame, isJoining, snack, clearSnack } = useGames();
+  const [idToDelete, setIdToDelete] = useState();
   const userModifiedData = useMemo(() => {
-  if (data && user.loggedIn) {
-    return data.map(game => {
-      return {
-        ...game,
-        is_dm: !!(game.dm_name === user.username),
-        playing: game.players.findIndex(p => p.discord_name === user.username) >= 0,
-        standingBy: game.standby.findIndex(p => p.discord_name === user.username) >= 0,
-      }
-    })
-  } else {
-    return data?.map(game => {
-      return { ...game, is_dm: false, playing: false };
-    }) || [];
-  }
+    if (data && user.loggedIn) {
+      return data.map(game => {
+        return {
+          ...game,
+          is_dm: !!(game.dm_name === user.username),
+          playing: game.players.findIndex(p => p.discord_name === user.username) >= 0,
+          standingBy: game.standby.findIndex(p => p.discord_name === user.username) >= 0,
+        }
+      })
+    } else {
+      return data?.map(game => {
+        return { ...game, is_dm: false, playing: false };
+      }) || [];
+    }
   }, [data, user])
-  
+
   const filtered = useMemo(() => {
     if (isLoading || !data) {
       return [
@@ -134,11 +136,16 @@ export default function Calendar() {
       deleteFromStorage(slotsKey);
     }
   }, [setLocalSlots, slots]);
-  
+
   const navigate = useNavigate();
-  
+
   return (
     <>
+      <MultiSnackbar {...snack} />
+      <ConfirmDialog open={idToDelete} confirmLabel="Drop from Game" title={`Are you sure you want drop from this game`} onClose={() => setIdToDelete(null)} onConfirm={() => {
+        alert('drop not yet supported');
+        setIdToDelete(null)
+      }} />
       <Grid
         container
         spacing={1}
@@ -232,8 +239,9 @@ export default function Calendar() {
               isLoading={isLoading}
               activeName={activeName}
               joinGame={joinGame}
+              dropGame={() => setIdToDelete(gameData.id)}
             />
-            </Grid>
+          </Grid>
         ))}
         {user?.loggedIn ? (
           <Box>

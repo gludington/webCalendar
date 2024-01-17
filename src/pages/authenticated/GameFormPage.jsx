@@ -7,9 +7,8 @@ import VariantSelector from "../../components/game/VariantSelector";
 import TierSelector from "../../components/game/TierSelector";
 import DateTimeSelector from "../../components/game/DateTimeSelector";
 import { useGame } from "../../api/games";
-import { Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, IconButton } from "@mui/material";
-import { Close } from "@mui/icons-material";
-import MultiSnackbar from "../../components/game/MutlisnackBar";
+import ConfirmDialog from "../../components/game/ConfirmDialog";
+import MultiSnackbar from "../../components/game/SnackbarAlert";
 
 
 export function EditGamePage() {
@@ -20,30 +19,6 @@ export function EditGamePage() {
 export function NewGamePage() {
   return <GamePage id="new" />
 }
-
-const ConfirmDialog = ({ name, onClose, onConfirm }) => {
-  return (
-    <Dialog open={true} maxWidth="sm" fullWidth>
-      <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>
-      <Box position="absolute" top={0} right={0}>
-        <IconButton>
-          <Close />
-        </IconButton>
-      </Box>
-      <DialogContent>
-        <Typography>You cannot undo this action</Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button color="primary" variant="contained" onClick={() => onClose()}>
-          Cancel
-        </Button>
-        <Button color="secondary" variant="contained" onClick={() => onConfirm()}>
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
 
 function GamePage(props) {
   const { formik, saveGame, isLoading, errorMessage, successMessage, deleteGame } = useGame(props.id);
@@ -76,10 +51,10 @@ function GameForm(props) {
   
   return (
     <form onSubmit={handleSubmit}>
-      {showDelete ? <ConfirmDialog name={values.name} onClose={() => setShowDelete(false)} onConfirm={() => {
+      <ConfirmDialog open={showDelete} title={`Are you sure you want to delete ${values.name}`} onClose={() => setShowDelete(false)} onConfirm={() => {
         props.deleteGame?.mutate();
         setShowDelete(false)
-      }}/> : null}
+      }}/>
       <Grid
         rowSpacing={2}
         xs={12} md={9}

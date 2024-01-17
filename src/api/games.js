@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as Yup from "yup";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import moment from "moment";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { UserContext } from "../App";
@@ -92,7 +92,6 @@ export function useGames() {
     queryKey: ['games'],
     queryFn: async () => {
       const rsp = await getGames();
-
       const data = rsp.data.map(game => {
         
         return {
@@ -112,7 +111,7 @@ export function useGames() {
     }
   });
   
-  const { mutate: joinGame, isLoading: isJoining} = useMutation({
+  const { mutate: joinGame, isLoading: isJoining } = useMutation({
     mutationFn: async (id) => {
       const response = await joinGameById(id)
       return response;
@@ -134,21 +133,33 @@ export function useGames() {
             current[currentIdx].players.push(rspUser)
             current[currentIdx].playing = true;
           }
+          setSnack({ open: true, message: "You have joined the same", severity: "success", onClose: () => clearSnack() })
           //optimistically change
           queryClient.setQueryData(["games"], current);
           queryClient.invalidateQueries({ queryKey: ["games"] });
         }
       }
+    },
+    onError: (error) => {
+      setSnack({ open: true, message: error?.response?.data?.message || "Unknown error", severity: "error", onClose: () => clearSnack() })
     }
   })
   
+  const [snack, setSnack] = useState({ open: false, message: "", severity: "success" })
+  const clearSnack = useCallback(() => {
+    setSnack((prev) => {
+      return { ...prev, open: false };
+  })}, []);
+
   return {
     isLoading,
     data,
     error,
     status,
     joinGame,
-    isJoining
+    isJoining,
+    snack,
+    clearSnack
   }
 }
 

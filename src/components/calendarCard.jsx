@@ -54,7 +54,7 @@ const Controls = ({ game }) => {
   return null;
 }
 
-const Game = ({ props, activeName, isLoading, joinGame, isJoining }) => {
+const Game = ({ props, activeName, isLoading, joinGame, isJoining, dropGame }) => {
   const {
     id,
     module,
@@ -73,7 +73,6 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining }) => {
     standingBy
   } = props;
 
-  const { user } = useContext(UserContext);
   return (
     <Card raised={true} sx={{ maxWidth: 450 }}>
       <CardContent sx={{ pt: 0.75, pb: 0.2, "&:last-child": { pb: 0 } }}>
@@ -209,7 +208,7 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining }) => {
       <CardActions sx={{ pt: 0.2 }} style={{ justifyContent: "center" }}>
         {isLoading ? null : (
           <Typography variant="suffix" color="text.secondary" alignItems="center" align={"center"}>
-            <RD joinGame={joinGame} isJoining={isJoining} {...props} />
+            <RD joinGame={joinGame} isJoining={isJoining} dropGame={dropGame} {...props} />
           </Typography>
         )}
       </CardActions>
@@ -218,7 +217,7 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining }) => {
   );
 };
 
-function RD({ id, datetime_release, datetime_open_release, playing, standingBy, joinGame, isJoining }) {
+function RD({ id, datetime_release, datetime_open_release, playing, standingBy, joinGame, isJoining, dropGame }) {
   const { user, login } = useContext(UserContext);
   const now = new Date();
   if (!user?.loggedIn) {
@@ -244,7 +243,7 @@ function RD({ id, datetime_release, datetime_open_release, playing, standingBy, 
         aria-describedby={`drop-${id}`}
         variant="contained"
         disabled={isJoining}
-        onClick={() => alert('drop not yet supportd')}
+        onClick={dropGame}
         size="small"
         sx={{ pt: 0.25, pb: 0, mt: 0.4, mb: 1.1, mr: 1 }}
         color="secondary"
