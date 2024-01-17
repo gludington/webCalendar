@@ -77,14 +77,16 @@ export default function Calendar() {
   const [localSlots, setLocalSlots] = useLocalStorage(slotsKey, "");
   const [slots, setSlots] = useState(createSlots(localSlots));
   const { user, isLoading: userLoading } = useContext(UserContext);
-  const { data, isLoading } = useGames();
+  const { data, isLoading, joinGame, isJoining } = useGames();
+  
   const userModifiedData = useMemo(() => {
   if (data && user.loggedIn) {
     return data.map(game => {
       return {
         ...game,
         is_dm: !!(game.dm_name === user.username),
-        playing: !!(game.players.indexOf(user.username) >= 0)
+        playing: game.players.findIndex(p => p.discord_name === user.username) >= 0,
+        standingBy: game.standby.findIndex(p => p.discord_name === user.username) >= 0,
       }
     })
   } else {
@@ -229,6 +231,7 @@ export default function Calendar() {
               props={gameData}
               isLoading={isLoading}
               activeName={activeName}
+              joinGame={joinGame}
             />
             </Grid>
         ))}

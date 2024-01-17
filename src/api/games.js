@@ -41,16 +41,35 @@ function getGame(id) {
   });
 }
 
+/**
+ * Create a game
+ * @param {*} values 
+ * @returns  the created game
+ */
 function createGame(values) {
   return axios.post(gamesUrl, values, { withCredentials: true, headers: applyCsrf()})
 }
 
+/**
+ * Update a game
+ * @param {*} values 
+ * @returns the updated game
+ */
 function updateGame(values) {
   return axios.patch(`${gamesUrl}${values.id}/`, values, { withCredentials: true, headers: applyCsrf()})
 }
 
+/**
+ * Delete a game
+ * @param {*} id the pk of the game to delete 
+ * @returns a delete response
+ */
 function deleteGameById(id) {
   return axios.delete(`${gamesUrl}${id}/`, { withCredentials: true, headers: applyCsrf()})
+}
+
+function joinGameById(id) {
+  return axios.post(`${gamesUrl}${id}/join/`, {}, { withCredentials: true, headers: applyCsrf()})
 }
 
 export const timeSlots = [
@@ -67,9 +86,11 @@ export const timeSlots = [
  * @returns the games, formatted for use
  */
 export function useGames() {
+  const queryClient = useQueryClient();
   const { user } = useContext(UserContext);
   const { data, isLoading, isFetching, error, status } = useQuery({
-    queryKey: ['games'], queryFn: async () => {
+    queryKey: ['games'],
+    queryFn: async () => {
       const rsp = await getGames();
 
       const data = rsp.data.map(game => {
@@ -91,11 +112,43 @@ export function useGames() {
     }
   });
   
+  const { mutate: joinGame, isLoading: isJoining} = useMutation({
+    mutationFn: async (id) => {
+      const response = await joinGameById(id)
+      return response;
+    },
+    onSettled: () => {
+      
+    },
+    onSuccess: (response, id) => {
+      const rspUser = response.data;
+      //unseenservant does not send an error if user is already in game
+      if (rspUser?.game) {
+        const current = data;
+        const currentIdx = data.findIndex(gm => gm.id == id);
+        if (currentIdx >= 0) {
+          if (rspUser.standby) {
+            current[currentIdx].standby.push(rspUser)
+            current[currentIdx].standingBy = true;
+          } else {
+            current[currentIdx].players.push(rspUser)
+            current[currentIdx].playing = true;
+          }
+          //optimistically change
+          queryClient.setQueryData(["games"], current);
+          queryClient.invalidateQueries({ queryKey: ["games"] });
+        }
+      }
+    }
+  })
+  
   return {
-    isLoading: isFetching,
+    isLoading,
     data,
     error,
-    status
+    status,
+    joinGame,
+    isJoining
   }
 }
 

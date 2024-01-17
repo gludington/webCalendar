@@ -40,22 +40,23 @@ const SKELETON_SX = { maxWidth: 450, width: "100%" };
 
 const Controls = ({ game }) => {
   const navigate = useNavigate();
-    if (game.is_dm) {
-      return (
-        <Button
+  if (game.is_dm) {
+    return (
+      <Button
         aria-describedby={game.id}
         variant="contained"
         size="small"
         sx={{ pt: 0.25, pb: 0, mt: 0.4, mb: 1.1, mr: 1 }}
         color="secondary"
         onClick={() => navigate(`/members/games/edit/${game.id}`)}>Edit</Button>
-      )
+    )
   }
   return null;
 }
 
-const Game = ({ props, activeName, isLoading }) => {
+const Game = ({ props, activeName, isLoading, joinGame, isJoining }) => {
   const {
+    id,
     module,
     name,
     datetime,
@@ -67,9 +68,11 @@ const Game = ({ props, activeName, isLoading }) => {
     datetime_release,
     datetime_open_release,
     players,
-    standby
+    standby,
+    playing,
+    standingBy
   } = props;
-  
+
   const { user } = useContext(UserContext);
   return (
     <Card raised={true} sx={{ maxWidth: 450 }}>
@@ -145,7 +148,7 @@ const Game = ({ props, activeName, isLoading }) => {
             <>
               <FullDescPopover game={props} />{" "}
               <CalendarAddPopover game={props} />
-              <Controls game={props}/>
+              <Controls game={props} />
             </>
           )}
         </Grid>
@@ -203,15 +206,73 @@ const Game = ({ props, activeName, isLoading }) => {
           </Grid>
         )}
       </CardActions>
-      <CardActions sx={{ pt: 0.2 }}>
+      <CardActions sx={{ pt: 0.2 }} style={{ justifyContent: "center" }}>
         {isLoading ? null : (
-          <Typography variant="suffix" color="text.secondary">
-            {ReleaseDate(datetime_release, datetime_open_release)}
+          <Typography variant="suffix" color="text.secondary" alignItems="center" align={"center"}>
+            <RD joinGame={joinGame} isJoining={isJoining} {...props} />
           </Typography>
         )}
       </CardActions>
-      <FilterMarker activeName={activeName} gameData={props}></FilterMarker>
+      <FilterMarker activeName={activeName} gameData={props} playing={playing} standingBy={standingBy}></FilterMarker>
     </Card>
   );
 };
+
+function RD({ id, datetime_release, datetime_open_release, playing, standingBy, joinGame, isJoining }) {
+  const { user, login } = useContext(UserContext);
+  const now = new Date();
+  if (!user?.loggedIn) {
+    return (
+      <Button
+        aria-describedby={`login-${id}`}
+        variant="contained"
+        disabled={isJoining}
+        onClick={login}
+        size="small"
+        sx={{ pt: 0.25, pb: 0, mt: 0.4, mb: 1.1, mr: 1 }}
+        color="secondary"
+
+      >
+        Login to Play
+      </Button>
+    )
+  }
+
+  if (playing || standingBy) {
+    return (
+      <Button
+        aria-describedby={`drop-${id}`}
+        variant="contained"
+        disabled={isJoining}
+        onClick={() => alert('drop not yet supportd')}
+        size="small"
+        sx={{ pt: 0.25, pb: 0, mt: 0.4, mb: 1.1, mr: 1 }}
+        color="secondary"
+
+      >
+        Drop Now
+      </Button>
+    )
+  }
+  if ((user.patreon && datetime_release.getTime() < now.getTime()) || datetime_open_release.getTime() < now.getTime()) {
+    return (
+      <Button
+        aria-describedby={`join-${id}`}
+        variant="contained"
+        disabled={isJoining}
+        onClick={() => joinGame(id)}
+        size="small"
+        sx={{ pt: 0.25, pb: 0, mt: 0.4, mb: 1.1, mr: 1 }}
+        color="secondary"
+
+      >
+        Join Now
+      </Button>
+    )
+  }
+  return (
+    ReleaseDate(datetime_release, datetime_open_release)
+  );
+}
+
 export default Game;

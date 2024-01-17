@@ -35,7 +35,7 @@ function NameFilter({ setActiveName, activeName, slots, setSlots }) {
       >
         <span>Filters:</span><Button color="secondary" variant="contained" onClick={() => setOpen(!open)}>Edit{filterCount ? ` (${filterCount})` : ""}</Button> {filterString?.length ? (
           <><Button color="secondary" variant="contained" onClick={() => { setActiveName(""); setSlots([]) }}>Clear</Button>
-            <span class="desktopOnly">{filterString}</span>
+            <span className="desktopOnly">{filterString}</span>
             </>
         ): null}
       </Box>

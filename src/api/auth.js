@@ -24,7 +24,7 @@ export default function useUser() {
       const u = await getUserDetails();
       let us;
       if (u.data?.user_data) {
-        us = { ...u.data.user_data, loggedIn: true }
+        us = { ...u.data.user_data, loggedIn: true, patreon: u.data.user_data.ranks.findIndex(rank => rank.patreon) >= 0 }
       } else {
         us = { loggedIn: false };
       };
