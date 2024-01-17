@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { FormikProvider, useFormikContext } from "formik";
 import { useParams } from "react-router";
 import { Grid, TextField, Button, Checkbox, FormControlLabel } from "@mui/material";
@@ -6,15 +7,10 @@ import VariantSelector from "../../components/game/VariantSelector";
 import TierSelector from "../../components/game/TierSelector";
 import DateTimeSelector from "../../components/game/DateTimeSelector";
 import { useGame } from "../../api/games";
-import { Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, IconButton, Snackbar } from "@mui/material";
-import MuiAlert from "@mui/material/Alert"
-import { forwardRef, useEffect, useState } from "react";
+import { Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import MultiSnackbar from "../../components/game/MutlisnackBar";
 
-
-const Alert = forwardRef((props, ref) => {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-})
 
 export function EditGamePage() {
   const { id } = useParams();
@@ -66,12 +62,8 @@ function GamePage(props) {
 
   return (
     <>
-      <Snackbar open={errorOpen} autoHideDuration={6000} onClose={() => setErrorOpen(false)}>
-        <Alert severity="error">{errorMessage}</Alert>
-      </Snackbar>
-      <Snackbar open={successOpen} autoHideDuration={6000} onClose={() => setSuccessOpen(false)}>
-        <Alert severity="success">{successMessage}</Alert>
-      </Snackbar>
+      <MultiSnackbar open={errorOpen} message={errorMessage} autoHideDuration={6000} onClose={() => setErrorOpen(false)}/>
+        <MultiSnackbar open={successOpen} message={successMessage} autoHideDuration={6000} onClose={() => setSuccessOpen(false)}/>
       <FormikProvider value={formik}>
         <GameForm isLoading={isLoading} deleteGame={deleteGame} />
       </FormikProvider>
