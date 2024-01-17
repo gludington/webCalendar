@@ -15,8 +15,6 @@ import CalendarAddPopover from "./CalendarAddPopover";
 import { toLocalString } from "../utils/formatting";
 import { checkTier } from "../utils/tier";
 import { ReleaseDate } from "../utils/releasedate";
-import { checkPlaying } from "../utils/checkPlaying";
-import { checkWaitlisted } from "../utils/checkWaitlisted";
 import FilterMarker from "./filterMarker";
 import { useContext } from "react";
 import { UserContext } from "../App";
@@ -55,6 +53,7 @@ const Controls = ({ game }) => {
   }
   return null;
 }
+
 const Game = ({ props, activeName, isLoading }) => {
   const {
     module,
@@ -68,8 +67,9 @@ const Game = ({ props, activeName, isLoading }) => {
     datetime_release,
     datetime_open_release,
     players,
+    standby
   } = props;
-
+  
   const { user } = useContext(UserContext);
   return (
     <Card raised={true} sx={{ maxWidth: 450 }}>
@@ -167,7 +167,7 @@ const Game = ({ props, activeName, isLoading }) => {
               title={
                 <Players
                   gameKey={`${dm_name}_${datetime}_playing`}
-                  players={checkPlaying(players)}
+                  players={players}
                 />
               }
               placement="top-start"
@@ -177,7 +177,7 @@ const Game = ({ props, activeName, isLoading }) => {
                   Players
                 </Typography>
                 <Typography variant="h6" color="text.primary">
-                  {checkPlaying(players).length} / {max_players}
+                  {players.length} / {max_players}
                 </Typography>
               </Box>
             </Tooltip>
@@ -186,7 +186,7 @@ const Game = ({ props, activeName, isLoading }) => {
               title={
                 <Players
                   gameKey={`${dm_name}_${datetime}_waitlisted`}
-                  players={checkWaitlisted(players)}
+                  players={standby}
                 />
               }
               placement="top-start"
@@ -196,7 +196,7 @@ const Game = ({ props, activeName, isLoading }) => {
                   Waitlist
                 </Typography>
                 <Typography variant="h6" color="text.primary">
-                  {checkWaitlisted(players).length}
+                  {standby.length}
                 </Typography>
               </Box>
             </Tooltip>

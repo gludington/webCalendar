@@ -134,6 +134,7 @@ export default function Calendar() {
   }, [setLocalSlots, slots]);
   
   const navigate = useNavigate();
+  
   return (
     <>
       <Grid

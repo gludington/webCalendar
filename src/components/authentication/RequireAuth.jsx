@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { Avatar, Button, Menu, MenuItem } from "@mui/material";
+import React, { useContext } from "react";
+import { Button } from "@mui/material";
 import { UserContext } from "../../App";
 
 export default function RequireAuth({ children }) {
