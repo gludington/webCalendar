@@ -14,6 +14,7 @@ import { UserContext } from "../../App";
  * @returns 
  */
 function LoggedInMenu({ closeMenu, logout }) {
+  const navigate = useNavigate();
   return (
     <>
       <MenuItem onClick={() => navigate("/members")}>View member area</MenuItem>

@@ -17,7 +17,29 @@ import { checkTier } from "../utils/tier";
 import FilterMarker from "./filterMarker";
 import { useNavigate } from "react-router-dom";
 import GameCardActions from "./game/GameCardActions";
+import { ClickAwayListener } from "@mui/material";
 
+const PlayerTooltip = ({ gameKey, players }) => {
+    const [open, setOpen] = React.useState(false);
+
+  return (
+    <ClickAwayListener onClickAway={() => setOpen(false)}>
+      <Tooltip disableFocusListener disableTouchListener disableHoverListener
+        onMouseOver={() => setOpen(true)}
+        onMouseOut={() => setOpen(false)}
+        open={open}
+              title={
+                <Players
+                  gameKey={gameKey}
+                  players={players}
+                />
+              }
+              
+      ><Button size="small" sx={{ pt: 0.25, pb: 0, mt: 0.4, mb: 1.1, mr: 1, minWidth: "30px" }}
+        onClick={() => setOpen(true)}>ℹ️</Button></Tooltip>
+    </ClickAwayListener>
+  )
+}
 const Players = ({ gameKey, players }) => {
   if (players && players.length > 0) {
     return (
@@ -89,13 +111,13 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining, dropGame, isD
                   {toLocalString(datetime)}
                 </Typography>
                 <Typography variant="subtitle2" color="text.secondary">
-                  {length}
+                  {length} {checkTier(level_min, level_max)}
                 </Typography>
               </Box>
             </>
           )}
           {isLoading ? (
-            <Skeleton height={22} sx={SKELETON_SX} />
+            <Skeleton height={12} sx={SKELETON_SX} />
           ) : (
             <>
               <Typography
@@ -104,13 +126,6 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining, dropGame, isD
                 sx={{ mr: 1 }}
               >
                 {module}
-              </Typography>
-              <Typography
-                variant="subtitle2"
-                color="text.primary"
-                display="block"
-              >
-                {checkTier(level_min, level_max)}
               </Typography>
             </>
           )}
@@ -159,43 +174,25 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining, dropGame, isD
           <Skeleton height={72} sx={SKELETON_SX} />
         ) : (
           <Grid container direction="row" justifyContent="space-between">
-            <Tooltip
-              title={
-                <Players
-                  gameKey={`${dm_name}_${datetime}_playing`}
-                  players={players}
-                />
-              }
-              placement="top-start"
-            >
               <Box p={1} textAlign="center" sx={{ flexGrow: 1 }}>
                 <Typography variant="body1" color="text.primary">
-                  Players
+                  Players <PlayerTooltip gameKey={`${dm_name}_${datetime}_waitlisted`}
+                  players={players}>l</PlayerTooltip>
                 </Typography>
                 <Typography variant="h6" color="text.primary">
                   {players.length} / {max_players}
                 </Typography>
               </Box>
-            </Tooltip>
             <Divider orientation="vertical" variant="middle" flexItem />
-            <Tooltip
-              title={
-                <Players
-                  gameKey={`${dm_name}_${datetime}_waitlisted`}
-                  players={standby}
-                />
-              }
-              placement="top-start"
-            >
               <Box p={1} textAlign="center" sx={{ flexGrow: 1 }}>
                 <Typography variant="body1" color="text.primary">
-                  Waitlist
+                  Waitlist <PlayerTooltip gameKey={`${dm_name}_${datetime}_waitlisted`}
+                  players={standby}>l</PlayerTooltip>
                 </Typography>
                 <Typography variant="h6" color="text.primary">
                   {standby.length}
                 </Typography>
               </Box>
-            </Tooltip>
           </Grid>
         )}
       </CardActions>
