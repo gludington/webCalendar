@@ -297,6 +297,12 @@ export function useGame(id) {
       module: Yup.string().label("Module Code").required(req),
       description: Yup.string().label("Description").required(req).min(1, req),
       warnings: Yup.string().label("Warnings"),
+      duration: Yup.number()
+        .label("Duration")
+        .required(req)
+        .integer(({ label }) => `${label} must be a whole number`)
+        .min(1, ({ label }) => `${label} must be positive`)
+        .max(11, ({ label }) => `${label} must be less than 10`),
       max_players: Yup.number()
         .label("Players")
         .test("max_players", (value, context) => {
@@ -362,7 +368,7 @@ export function useGame(id) {
       datetime: nextWeek(),
       datetime_release: new Date(),
       datetime_open_release: tomorrow(),
-      length: "4 hours",
+      duration: 4,
       ready: true,
     },
     onSubmit: (values) => {

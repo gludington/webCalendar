@@ -138,7 +138,7 @@ function GameForm(props) {
           />
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={8} md={4}>
           <DateTimeSelector
             label="Game Start"
             name="datetime"
@@ -150,6 +150,20 @@ function GameForm(props) {
                 datetime_release: new Date(val.getTime() - 2 * oneWeek),
                 datetime_open_release: new Date(val.getTime() - oneWeek),
               });
+            }}
+          />
+        </Grid>
+        <Grid item xs={4} md={3}>
+          <TextField
+            name="duration"
+            value={values.duration}
+            error={!!errors.duration}
+            helperText={errors.duration}
+            onChange={handleChange}
+            label="Duration (Hours)"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
             }}
           />
         </Grid>

@@ -62,7 +62,7 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining, dropGame, isD
     module,
     name,
     datetime,
-    length,
+    duration,
     max_players,
     dm_name,
     level_min,
@@ -86,7 +86,7 @@ const Game = ({ props, activeName, isLoading, joinGame, isJoining, dropGame, isD
                   {toLocalString(datetime)}
                 </Typography>
                 <Typography variant="subtitle2" color="text.secondary">
-                  {length} {checkTier(level_min, level_max)}
+                  {duration ? `${duration} Hours` : ""} {checkTier(level_min, level_max)}
                 </Typography>
               </Box>
             </>
