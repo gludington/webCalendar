@@ -16,12 +16,14 @@ export default function LevelRangeSelector(props) {
         error={!!errors.level_min}
         helperText={errors.level_min}
         onChange={(evt) => {
-          setValues({
-            ...values,
-            level_min: evt.target.value,
-            level_max: evt.target.value > values.level_min ? evt.target.value : values.level_max,
-            tier: minToTier(evt.target.value),
-          });
+          if (evt.target.value) {
+            setValues({
+              ...values,
+              level_min: parseInt(evt.target.value),
+              level_max: evt.target.value > values.level_min ? parseInt(evt.target.value) : values.level_max,
+              tier: minToTier(evt.target.value),
+            });
+          }
         }}
         label="Min Level"
         type="number"
@@ -37,12 +39,14 @@ export default function LevelRangeSelector(props) {
         error={!!errors.level_max}
         helperText={errors.level_max}
         onChange={(evt) => {
-          setValues({
-            ...values,
-            level_max: evt.target.value,
-            level_min: evt.target.value < values.level_min ? evt.target.value : values.level_min,
-            tier: evt.target.value < values.level_min ? minToTier(evt.target.value) : values.tier,
-          });
+          if (evt.target.value) {
+            setValues({
+              ...values,
+              level_max: parseInt(evt.target.value),
+              level_min: evt.target.value < values.level_min ? parseInt(evt.target.value) : values.level_min,
+              tier: evt.target.value < values.level_min ? minToTier(evt.target.value) : values.tier,
+            });
+          }
         }}
         label="Max Level"
         type="number"
