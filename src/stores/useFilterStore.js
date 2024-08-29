@@ -86,7 +86,7 @@ function nameFilterFn(gameData, activeName) {
 }
 
 function filterGames(data, activeName, slot, realms, variants, tiers, playTests, streaming) {
-  if (slot >= 0 || activeName?.length > 0 || realms?.length > 0 || variants?.length > 0 || tiers?.length > 0) {
+  if (slot?.length > 0 || activeName?.length > 0 || realms?.length > 0 || variants?.length > 0 || tiers?.length > 0) {
     //tier fn is odd, becuse we have games that can span ranges, and people can seelct multiple different tiers
     //would be nice to have a jest test setup, but logic is if:
     // 1) game min >= tier min AND
